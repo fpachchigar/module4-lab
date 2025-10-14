@@ -29,10 +29,3 @@ flowchart TD
     J --> Q
     M --> Q
     P --> Q
-
-
-
-## Calculator Design Preview
-
-Check out my Figma calculator design here: [View Calculator]https://www.figma.com/make/Xz2KwTfXVOkGQMUMHSALtX/High-Fidelity-Calculator-Frame?fullscreen=1
-
