@@ -3,16 +3,277 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JSON Placeholder Posts</title>
+    <title>JSON Placeholder Posts & Calculator</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .animation-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .square-slider {
+            width: 80px;
+            height: 80px;
+            position: absolute;
+            left: 50%;
+            top: -100px;
+            transform: translateX(-50%);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            animation: slideDown 3s ease-in-out infinite;
+        }
+        
+        @keyframes slideDown {
+            0% {
+                top: -100px;
+                background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+                transform: translateX(-50%) rotate(0deg);
+            }
+            25% {
+                top: 25%;
+                background: linear-gradient(45deg, #feca57, #ff9ff3);
+                transform: translateX(-50%) rotate(90deg);
+            }
+            50% {
+                top: 50%;
+                background: linear-gradient(45deg, #48cae4, #023e8a);
+                transform: translateX(-50%) rotate(180deg);
+            }
+            75% {
+                top: 75%;
+                background: linear-gradient(45deg, #06ffa5, #10ac84);
+                transform: translateX(-50%) rotate(270deg);
+            }
+            100% {
+                top: calc(100% + 100px);
+                background: linear-gradient(45deg, #c44569, #f8b500);
+                transform: translateX(-50%) rotate(360deg);
+            }
+        }
+        
+        .controls-panel {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin: 20px 0;
+        }
+        
+        .animation-control {
+            margin: 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .play-btn {
+            background: #48bb78;
+            color: white;
+        }
+        
+        .play-btn:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+        }
+        
+        .pause-btn {
+            background: #f6ad55;
+            color: white;
+        }
+        
+        .pause-btn:hover {
+            background: #ed8936;
+            transform: translateY(-2px);
+        }
+        
+        .reset-btn {
+            background: #fc8181;
+            color: white;
+        }
+        
+        .reset-btn:hover {
+            background: #f56565;
+            transform: translateY(-2px);
+        }
+        
+        .paused {
+            animation-play-state: paused !important;
+        }
+
+        /* Calculator Styles */
+        .calculator {
+            background: #2d3748;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            max-width: 350px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .calculator .display {
+            margin-bottom: 20px;
+        }
+
+        .calculator #display {
+            width: 100%;
+            height: 80px;
+            font-size: 2rem;
+            text-align: right;
+            padding: 0 20px;
+            border: none;
+            border-radius: 10px;
+            background: #1a202c;
+            color: #ffffff;
+            outline: none;
+            font-weight: bold;
+        }
+
+        .calculator .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .calculator .btn {
+            height: 60px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #4a5568;
+            color: #ffffff;
+        }
+
+        .calculator .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .calculator .btn:active {
+            transform: translateY(0);
+        }
+
+        .calculator .btn.operator {
+            background: #f6ad55;
+            color: #2d3748;
+        }
+
+        .calculator .btn.operator:hover {
+            background: #ed8936;
+        }
+
+        .calculator .btn.equals {
+            background: #48bb78;
+            color: #ffffff;
+            grid-row: span 2;
+            height: 135px;
+        }
+
+        .calculator .btn.equals:hover {
+            background: #38a169;
+        }
+
+        .calculator .btn.clear {
+            background: #fc8181;
+            color: #ffffff;
+        }
+
+        .calculator .btn.clear:hover {
+            background: #f56565;
+        }
+
+        .calculator .btn.zero {
+            grid-column: span 2;
+        }
+
+        /* Responsive design for calculator */
+        @media (max-width: 480px) {
+            .calculator {
+                padding: 15px;
+                max-width: 300px;
+            }
+            
+            .calculator #display {
+                height: 70px;
+                font-size: 1.8rem;
+            }
+            
+            .calculator .btn {
+                height: 50px;
+                font-size: 1rem;
+            }
+            
+            .calculator .btn.equals {
+                height: 115px;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container mt-5">
-        <h1 class="text-center mb-5">Posts from JSON Placeholder</h1>
+        <h1 class="text-center mb-5">Posts, Animation & Calculator</h1>
         
-        <!-- Controls Section -->
+        <!-- Calculator Section -->
         <div class="row mb-5">
+            <div class="col-12">
+                <h2 class="text-center mb-4">Calculator</h2>
+            </div>
+            <div class="col-12 col-md-8 col-lg-6 mx-auto">
+                <div class="calculator">
+                    <div class="display">
+                        <input type="text" id="display" readonly>
+                    </div>
+                    <div class="buttons">
+                        <!-- Clear and Reset -->
+                        <button class="btn clear" onclick="clearDisplay()">C</button>
+                        <button class="btn" onclick="deleteLast()">⌫</button>
+                        <button class="btn operator" onclick="appendToDisplay('/')" data-operator="÷">÷</button>
+                        <button class="btn operator" onclick="appendToDisplay('*')" data-operator="×">×</button>
+                        
+                        <!-- Row 1 -->
+                        <button class="btn" onclick="appendToDisplay('7')">7</button>
+                        <button class="btn" onclick="appendToDisplay('8')">8</button>
+                        <button class="btn" onclick="appendToDisplay('9')">9</button>
+                        <button class="btn operator" onclick="appendToDisplay('-')">-</button>
+                        
+                        <!-- Row 2 -->
+                        <button class="btn" onclick="appendToDisplay('4')">4</button>
+                        <button class="btn" onclick="appendToDisplay('5')">5</button>
+                        <button class="btn" onclick="appendToDisplay('6')">6</button>
+                        <button class="btn operator" onclick="appendToDisplay('+')">+</button>
+                        
+                        <!-- Row 3 -->
+                        <button class="btn" onclick="appendToDisplay('1')">1</button>
+                        <button class="btn" onclick="appendToDisplay('2')">2</button>
+                        <button class="btn" onclick="appendToDisplay('3')">3</button>
+                        <button class="btn equals" onclick="calculate()" rowspan="2">=</button>
+                        
+                        <!-- Row 4 -->
+                        <button class="btn zero" onclick="appendToDisplay('0')">0</button>
+                        <button class="btn" onclick="appendToDisplay('.')">.</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Posts Controls Section -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <h2 class="text-center mb-4">JSON Placeholder Posts</h2>
+            </div>
             <div class="col-12 col-md-8 col-lg-6 mx-auto">
                 <div class="card">
                     <div class="card-header">
@@ -47,12 +308,233 @@
         <div id="posts-container" class="row">
             <!-- Posts will be populated here -->
         </div>
+
+        <h2 class="text-center mb-5">Square Slider Animation</h2>
+        
+        <!-- Animation Container -->
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 col-lg-6">
+                <div class="animation-container">
+                    <div class="square-slider" id="squareSlider"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Animation Controls Panel -->
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 col-lg-6">
+                <div class="controls-panel text-center">
+                    <h5 class="mb-3">Animation Controls</h5>
+                    <button class="animation-control play-btn" onclick="playAnimation()">Play</button>
+                    <button class="animation-control pause-btn" onclick="pauseAnimation()">Pause</button>
+                    <button class="animation-control reset-btn" onclick="resetAnimation()">Reset</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Animation Description -->
+        <div class="row justify-content-center mt-4">
+            <div class="col-12 col-md-8 col-lg-6">
+                <div class="controls-panel">
+                    <h5>Animation Features:</h5>
+                    <ul>
+                        <li>Square slides from top to bottom</li>
+                        <li>Background color changes throughout the animation</li>
+                        <li>Square rotates 360 degrees during the slide</li>
+                        <li>Animation loops infinitely</li>
+                        <li>3-second duration per cycle</li>
+                        <li>Smooth easing transitions</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
     
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
+        // Calculator state
+        let currentInput = '';
+        let operator = '';
+        let previousInput = '';
+        let shouldResetDisplay = false;
+
+        // Get display element
+        const display = document.getElementById('display');
+
+        // Function to append values to display
+        function appendToDisplay(value) {
+            if (shouldResetDisplay) {
+                currentInput = '';
+                shouldResetDisplay = false;
+            }
+            
+            // Handle operators
+            if (['+', '-', '*', '/'].includes(value)) {
+                if (currentInput === '' && previousInput === '') {
+                    return; // Don't allow operator as first input
+                }
+                
+                if (operator && currentInput && previousInput) {
+                    // Calculate existing operation first
+                    calculate();
+                }
+                
+                operator = value;
+                previousInput = currentInput || previousInput;
+                currentInput = '';
+                updateDisplay(previousInput + ' ' + getOperatorSymbol(value) + ' ');
+                return;
+            }
+            
+            // Handle decimal point
+            if (value === '.') {
+                if (currentInput.includes('.')) {
+                    return; // Don't allow multiple decimal points
+                }
+                if (currentInput === '') {
+                    currentInput = '0.';
+                } else {
+                    currentInput += value;
+                }
+            } else {
+                // Handle numbers
+                currentInput += value;
+            }
+            
+            updateDisplay((previousInput && operator ? previousInput + ' ' + getOperatorSymbol(operator) + ' ' : '') + currentInput);
+        }
+
+        // Function to update display
+        function updateDisplay(value) {
+            display.value = value || '0';
+        }
+
+        // Function to get operator symbol for display
+        function getOperatorSymbol(op) {
+            switch(op) {
+                case '+': return '+';
+                case '-': return '-';
+                case '*': return '×';
+                case '/': return '÷';
+                default: return op;
+            }
+        }
+
+        // Function to perform calculation
+        function calculate() {
+            if (!operator || !previousInput || !currentInput) {
+                return;
+            }
+            
+            const prev = parseFloat(previousInput);
+            const current = parseFloat(currentInput);
+            let result;
+            
+            switch(operator) {
+                case '+':
+                    result = prev + current;
+                    break;
+                case '-':
+                    result = prev - current;
+                    break;
+                case '*':
+                    result = prev * current;
+                    break;
+                case '/':
+                    if (current === 0) {
+                        updateDisplay('Error: Division by zero');
+                        resetCalculator();
+                        return;
+                    }
+                    result = prev / current;
+                    break;
+                default:
+                    return;
+            }
+            
+            // Round to avoid floating point precision issues
+            result = Math.round(result * 100000000) / 100000000;
+            
+            updateDisplay(result.toString());
+            
+            // Reset for next calculation
+            currentInput = result.toString();
+            operator = '';
+            previousInput = '';
+            shouldResetDisplay = true;
+        }
+
+        // Function to clear display (reset)
+        function clearDisplay() {
+            resetCalculator();
+            updateDisplay('');
+        }
+
+        // Function to reset calculator state
+        function resetCalculator() {
+            currentInput = '';
+            operator = '';
+            previousInput = '';
+            shouldResetDisplay = false;
+        }
+
+        // Function to delete last character
+        function deleteLast() {
+            if (shouldResetDisplay) {
+                clearDisplay();
+                return;
+            }
+            
+            if (currentInput) {
+                currentInput = currentInput.slice(0, -1);
+                updateDisplay((previousInput && operator ? previousInput + ' ' + getOperatorSymbol(operator) + ' ' : '') + currentInput);
+            } else if (operator) {
+                operator = '';
+                currentInput = previousInput;
+                previousInput = '';
+                updateDisplay(currentInput);
+            }
+        }
+
+        // Keyboard support for calculator
+        document.addEventListener('keydown', function(event) {
+            const key = event.key;
+            
+            // Numbers and decimal point
+            if (/[0-9\.]/.test(key)) {
+                appendToDisplay(key);
+            }
+            
+            // Operators
+            if (key === '+' || key === '-') {
+                appendToDisplay(key);
+            }
+            if (key === '*') {
+                appendToDisplay('*');
+            }
+            if (key === '/') {
+                event.preventDefault(); // Prevent browser search
+                appendToDisplay('/');
+            }
+            
+            // Enter or equals
+            if (key === 'Enter' || key === '=') {
+                calculate();
+            }
+            
+            // Escape or 'c' for clear
+            if (key === 'Escape' || key.toLowerCase() === 'c') {
+                clearDisplay();
+            }
+            
+            // Backspace for delete
+            if (key === 'Backspace') {
+                deleteLast();
+            }
+        });
+
         // Posts data array
         let posts = [];
 
@@ -150,9 +632,31 @@
             }
         });
 
-        // Initial load when page loads
+        // Animation control functions
+        const squareSlider = document.getElementById('squareSlider');
+        
+        function playAnimation() {
+            squareSlider.classList.remove('paused');
+            squareSlider.style.animationPlayState = 'running';
+        }
+        
+        function pauseAnimation() {
+            squareSlider.classList.add('paused');
+            squareSlider.style.animationPlayState = 'paused';
+        }
+        
+        function resetAnimation() {
+            squareSlider.style.animation = 'none';
+            squareSlider.offsetHeight; // Trigger reflow
+            squareSlider.style.animation = 'slideDown 3s ease-in-out infinite';
+            squareSlider.classList.remove('paused');
+        }
+        
+        // Initialize everything when page loads
         window.addEventListener('load', function() {
             fetchPosts(10); // Default to 10 posts
+            updateDisplay(''); // Initialize calculator display
+            console.log('Page loaded with calculator, posts, and animation');
         });
     </script>
 </body>
