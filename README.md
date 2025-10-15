@@ -1,4 +1,3 @@
-# module4-lab
 # Calculator App Flow
 
 This is a simple flowchart showing the operations of a calculator app.

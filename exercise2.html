@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 3 - Exercise 2: Array-Based Card Generation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card h3 {
+            color: #333;
+            margin-top: 0;
+        }
+        
+        .card p {
+            color: #666;
+            line-height: 1.5;
+        }
+        
+        .age-badge {
+            background: #667eea;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        button {
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        
+        button:hover {
+            background: #5a6fd8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Exercise 2: Array-Based Card Generation</h1>
+        
+        <div class="controls">
+            <h3>Generate Cards from Data</h3>
+            <button onclick="generateCards()">Generate Cards from Array</button>
+            <button onclick="clearCards()">Clear All Cards</button>
+        </div>
+        
+        <div id="cardContainer">
+            <!-- Cards will be dynamically generated here -->
+        </div>
+    </div>
+
+    <script>
+        // Exercise 2: Use the provided data array
+        const data = [
+            {name: 'bob', age: 23}, 
+            {name: 'alice', age: 39}
+        ];
+        
+        // Modified addCard function from Exercise 1
+        function addCard(title, content) {
+            const cardContainer = document.getElementById('cardContainer');
+            
+            // Create card element
+            const card = document.createElement('div');
+            card.className = 'card';
+            
+            // Add content to card
+            card.innerHTML = `
+                <h3>${title}</h3>
+                <p>${content}</p>
+            `;
+            
+            // Add card to container
+            cardContainer.appendChild(card);
+        }
+        
+        // Exercise 2: Generate cards based on array data
+        function generateCards() {
+            // Clear existing cards first
+            clearCards();
+            
+            // Call addCard repeatedly for each item in the data array
+            data.forEach(person => {
+                const title = person.name.charAt(0).toUpperCase() + person.name.slice(1);
+                const content = `
+                    <strong>Name:</strong> ${person.name}<br>
+                    <strong>Age:</strong> ${person.age} years old
+                    <span class="age-badge">Age: ${person.age}</span>
+                `;
+                
+                addCard(title, content);
+            });
+        }
+        
+        // Function to clear all cards
+        function clearCards() {
+            const cardContainer = document.getElementById('cardContainer');
+            cardContainer.innerHTML = '';
+        }
+        
+        // Automatically generate cards when page loads
+        window.onload = function() {
+            generateCards();
+        };
+    </script>
+</body>
+</html>

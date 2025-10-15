@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 3 - Exercise 3: Artist Portfolio</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .artist-profile {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .artist-name {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 15px;
+        }
+        
+        .portfolio-section {
+            margin-top: 30px;
+        }
+        
+        .portfolio-title {
+            color: #333;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .portfolio-item {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            border: 3px solid #f0f0f0;
+        }
+        
+        .portfolio-item:hover {
+            transform: translateY(-5px);
+            border-color: #667eea;
+        }
+        
+        .portfolio-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .portfolio-item h3 {
+            color: #333;
+            margin: 0 0 10px 0;
+            text-transform: capitalize;
+            font-size: 1.3em;
+        }
+        
+        .portfolio-item p {
+            color: #666;
+            line-height: 1.5;
+            margin: 0;
+        }
+        
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        button {
+            background: #667eea;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 1em;
+        }
+        
+        button:hover {
+            background: #5a6fd8;
+        }
+        
+        .artist-count {
+            color: #666;
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Exercise 3: Artist Portfolio Generator</h1>
+        
+        <div class="controls">
+            <h3>Dynamic Artist Portfolio</h3>
+            <button onclick="generateSingleArtist()">Show Van Gogh</button>
+            <button onclick="generateMultipleArtists()">Show All Artists</button>
+            <button onclick="clearPortfolio()">Clear Portfolio</button>
+        </div>
+        
+        <div id="portfolioContainer">
+            <!-- Artist profiles will be dynamically generated here -->
+        </div>
+    </div>
+
+    <script>
+        // Exercise 3: Single artist data as provided
+        const artist = {
+            name: "Van Gogh",
+            portfolio: [
+                {
+                    title: "portrait", 
+                    url: "https://collectionapi.metmuseum.org/api/collection/v1/iiif/436532/1671316/main-image"
+                },
+                {
+                    title: "sky", 
+                    url: "https://mymodernmet.com/wp/wp-content/uploads/2020/11/White-house-night-van-goh-worldwide-2.jpg"
+                }
+            ]
+        };
+        
+        // Extension: Array of multiple artists with portfolios
+        const artists = [
+            {
+                name: "Van Gogh",
+                portfolio: [
+                    {
+                        title: "Portrait", 
+                        url: "https://collectionapi.metmuseum.org/api/collection/v1/iiif/436532/1671316/main-image"
+                    },
+                    {
+                        title: "Starry Night Sky", 
+                        url: "https://mymodernmet.com/wp/wp-content/uploads/2020/11/White-house-night-van-goh-worldwide-2.jpg"
+                    },
+                    {
+                        title: "Sunflowers", 
+                        url: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Vincent_Willem_van_Gogh_127.jpg/300px-Vincent_Willem_van_Gogh_127.jpg"
+                    }
+                ]
+            },
+            {
+                name: "Picasso",
+                portfolio: [
+                    {
+                        title: "Guernica", 
+                        url: "https://upload.wikimedia.org/wikipedia/en/thumb/7/74/PicassoGuernica.jpg/400px-PicassoGuernica.jpg"
+                    },
+                    {
+                        title: "Les Demoiselles d'Avignon", 
+                        url: "https://upload.wikimedia.org/wikipedia/en/thumb/4/4c/Les_Demoiselles_d%27Avignon.jpg/300px-Les_Demoiselles_d%27Avignon.jpg"
+                    }
+                ]
+            },
+            {
+                name: "Monet",
+                portfolio: [
+                    {
+                        title: "Water Lilies", 
+                        url: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Claude_Monet_-_Water_Lilies_-_1919%2C_Metropolitan_Museum_of_Art.jpg/400px-Claude_Monet_-_Water_Lilies_-_1919%2C_Metropolitan_Museum_of_Art.jpg"
+                    },
+                    {
+                        title: "Impression Sunrise", 
+                        url: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Monet_-_Impression%2C_Sunrise.jpg/400px-Monet_-_Impression%2C_Sunrise.jpg"
+                    },
+                    {
+                        title: "Cathedral Series", 
+                        url: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Monet_Cathedral_Rouen_facade.jpg/300px-Monet_Cathedral_Rouen_facade.jpg"
+                    }
+                ]
+            }
+        ];
+        
+        // Function to create an artist profile card
+        function createArtistProfile(artistData) {
+            const portfolioContainer = document.getElementById('portfolioContainer');
+            
+            // Create artist profile container
+            const artistProfile = document.createElement('div');
+            artistProfile.className = 'artist-profile';
+            
+            // Create artist name header
+            const artistName = document.createElement('h2');
+            artistName.className = 'artist-name';
+            artistName.textContent = artistData.name;
+            artistProfile.appendChild(artistName);
+            
+            // Create portfolio section
+            const portfolioSection = document.createElement('div');
+            portfolioSection.className = 'portfolio-section';
+            
+            const portfolioTitle = document.createElement('h3');
+            portfolioTitle.className = 'portfolio-title';
+            portfolioTitle.textContent = `${artistData.name}'s Portfolio (${artistData.portfolio.length} works)`;
+            portfolioSection.appendChild(portfolioTitle);
+            
+            // Create portfolio grid
+            const portfolioGrid = document.createElement('div');
+            portfolioGrid.className = 'portfolio-grid';
+            
+            // Generate portfolio items
+            artistData.portfolio.forEach(item => {
+                const portfolioItem = document.createElement('div');
+                portfolioItem.className = 'portfolio-item';
+                
+                portfolioItem.innerHTML = `
+                    <img src="${item.url}" alt="${item.title}" onerror="this.src='https://via.placeholder.com/300x200?text=Image+Not+Available'">
+                    <h3>${item.title}</h3>
+                    <p>Artist: ${artistData.name}<br>
+                    Click to view full image</p>
+                `;
+                
+                // Add click event to open image in new tab
+                portfolioItem.addEventListener('click', () => {
+                    window.open(item.url, '_blank');
+                });
+                
+                portfolioGrid.appendChild(portfolioItem);
+            });
+            
+            portfolioSection.appendChild(portfolioGrid);
+            artistProfile.appendChild(portfolioSection);
+            portfolioContainer.appendChild(artistProfile);
+        }
+        
+        // Function to generate single artist (Van Gogh)
+        function generateSingleArtist() {
+            clearPortfolio();
+            createArtistProfile(artist);
+            
+            // Add artist count info
+            const artistCount = document.createElement('div');
+            artistCount.className = 'artist-count';
+            artistCount.textContent = `Showing 1 artist with ${artist.portfolio.length} portfolio items`;
+            document.getElementById('portfolioContainer').appendChild(artistCount);
+        }
+        
+        // Function to generate multiple artists
+        function generateMultipleArtists() {
+            clearPortfolio();
+            
+            artists.forEach(artistData => {
+                createArtistProfile(artistData);
+            });
+            
+            // Add artist count info
+            const totalItems = artists.reduce((total, artist) => total + artist.portfolio.length, 0);
+            const artistCount = document.createElement('div');
+            artistCount.className = 'artist-count';
+            artistCount.textContent = `Showing ${artists.length} artists with ${totalItems} total portfolio items`;
+            document.getElementById('portfolioContainer').appendChild(artistCount);
+        }
+        
+        // Function to clear portfolio
+        function clearPortfolio() {
+            const portfolioContainer = document.getElementById('portfolioContainer');
+            portfolioContainer.innerHTML = '';
+        }
+        
+        // Automatically show Van Gogh when page loads
+        window.onload = function() {
+            generateSingleArtist();
+        };
+    </script>
+</body>
+</html>

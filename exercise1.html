@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 3 - Exercise 1: Dynamic Card Function</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card h3 {
+            color: #333;
+            margin-top: 0;
+        }
+        
+        .card p {
+            color: #666;
+            line-height: 1.5;
+        }
+        
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        input, button {
+            margin: 5px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        button {
+            background: #667eea;
+            color: white;
+            cursor: pointer;
+            border: none;
+        }
+        
+        button:hover {
+            background: #5a6fd8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Exercise 1: Dynamic Card Function</h1>
+        
+        <div class="controls">
+            <h3>Add New Card</h3>
+            <input type="text" id="cardTitle" placeholder="Card Title">
+            <input type="text" id="cardContent" placeholder="Card Content">
+            <button onclick="addCardFromInput()">Add Card</button>
+        </div>
+        
+        <div id="cardContainer">
+            <!-- Cards will be dynamically added here -->
+        </div>
+    </div>
+
+    <script>
+        // Exercise 1: Modify addCard function to accept dynamic content
+        function addCard(title, content) {
+            const cardContainer = document.getElementById('cardContainer');
+            
+            // Create card element
+            const card = document.createElement('div');
+            card.className = 'card';
+            
+            // Add content to card
+            card.innerHTML = `
+                <h3>${title}</h3>
+                <p>${content}</p>
+            `;
+            
+            // Add card to container
+            cardContainer.appendChild(card);
+        }
+        
+        // Function to handle input and create card
+        function addCardFromInput() {
+            const title = document.getElementById('cardTitle').value;
+            const content = document.getElementById('cardContent').value;
+            
+            if (title && content) {
+                addCard(title, content);
+                
+                // Clear inputs
+                document.getElementById('cardTitle').value = '';
+                document.getElementById('cardContent').value = '';
+            } else {
+                alert('Please enter both title and content');
+            }
+        }
+        
+        // Demo: Add some initial cards
+        addCard('Welcome Card', 'This card was created dynamically using the addCard function!');
+        addCard('Dynamic Content', 'You can pass any title and content to create new cards.');
+    </script>
+</body>
+</html>
