@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 3 - Exercise 2: Enhanced with Date/Time Libraries</title>
+    <!-- Luxon CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3.4.4/build/global/luxon.min.js"></script>
+    <!-- Moment.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+            position: relative;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card h3 {
+            color: #333;
+            margin-top: 0;
+        }
+        
+        .card p {
+            color: #666;
+            line-height: 1.5;
+        }
+        
+        .age-badge {
+            background: #667eea;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        
+        .timestamp-section {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .timestamp-section h4 {
+            margin: 0 0 10px 0;
+            color: #333;
+            font-size: 1.1em;
+        }
+        
+        .timestamp-item {
+            margin: 8px 0;
+            font-family: monospace;
+            background: white;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            font-size: 0.9em;
+        }
+        
+        .library-toggle {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            cursor: pointer;
+        }
+        
+        .library-toggle:hover {
+            background: #218838;
+        }
+        
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        button {
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        
+        button:hover {
+            background: #5a6fd8;
+        }
+        
+        .birthday-input {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        input[type="date"] {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        .stats-section {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .stat-number {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Exercise 2: Enhanced with Date/Time Libraries</h1>
+        
+        <div class="controls">
+            <h3>Generate Enhanced Person Cards</h3>
+            <div class="controls-grid">
+                <button onclick="generateCards()">Generate Cards (Luxon)</button>
+                <button onclick="generateCardsMoment()">Generate Cards (Moment.js)</button>
+                <button onclick="clearCards()">Clear All Cards</button>
+                <button onclick="addPersonWithBirthday()">Add Person with Birthday</button>
+            </div>
+            
+            <div class="birthday-input" style="margin-top: 15px;">
+                <input type="text" id="personName" placeholder="Person Name" style="padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
+                <input type="date" id="personBirthday">
+                <button onclick="addCustomPerson()" style="margin: 0;">Add Custom Person</button>
+            </div>
+        </div>
+        
+        <div id="statsContainer" class="stats-section" style="display: none;">
+            <h4>📊 Statistics</h4>
+            <div id="statsGrid" class="stats-grid">
+                <!-- Stats will be populated here -->
+            </div>
+        </div>
+        
+        <div id="cardContainer">
+            <!-- Cards will be dynamically generated here -->
+        </div>
+    </div>
+
+    <script>
+        // Enhanced data array with birthdays
+        const data = [
+            {name: 'bob', age: 23, birthday: '2001-05-15'}, 
+            {name: 'alice', age: 39, birthday: '1985-12-03'},
+            {name: 'charlie', age: 28, birthday: '1996-08-22'},
+            {name: 'diana', age: 31, birthday: '1993-03-10'}
+        ];
+
+        let currentLibrary = 'luxon'; // Track which library is being used
+        let allPeople = [...data]; // Copy of data for modifications
+
+        // Enhanced addCard function with timestamp support
+        function addCard(title, content, person, library = 'luxon') {
+            const { DateTime } = luxon;
+            const cardContainer = document.getElementById('cardContainer');
+            
+            // Create card element
+            const card = document.createElement('div');
+            card.className = 'card';
+            
+            // Calculate various dates using the specified library
+            let birthdayInfo, ageInfo, nextBirthdayInfo, currentTimeInfo;
+            
+            if (library === 'luxon') {
+                const birthday = DateTime.fromISO(person.birthday);
+                const now = DateTime.now();
+                const nextBirthday = birthday.set({ year: now.year }).plus({ years: birthday > now.startOf('day') ? 0 : 1 });
+                
+                birthdayInfo = {
+                    formatted: birthday.toLocaleString(DateTime.DATE_FULL),
+                    relative: birthday.toRelative(),
+                    dayOfWeek: birthday.toFormat('EEEE'),
+                    daysUntilNext: Math.ceil(nextBirthday.diff(now, 'days').days),
+                    nextBirthdayDate: nextBirthday.toLocaleString(DateTime.DATE_MED)
+                };
+                
+                currentTimeInfo = {
+                    created: now.toLocaleString(DateTime.DATETIME_MED_WITH_SECONDS),
+                    iso: now.toISO(),
+                    relative: now.toRelative()
+                };
+            } else {
+                const birthday = moment(person.birthday);
+                const now = moment();
+                const nextBirthday = moment(person.birthday).year(now.year());
+                if (nextBirthday.isBefore(now)) {
+                    nextBirthday.add(1, 'year');
+                }
+                
+                birthdayInfo = {
+                    formatted: birthday.format('dddd, MMMM Do YYYY'),
+                    relative: birthday.fromNow(),
+                    dayOfWeek: birthday.format('dddd'),
+                    daysUntilNext: nextBirthday.diff(now, 'days'),
+                    nextBirthdayDate: nextBirthday.format('MMM D, YYYY')
+                };
+                
+                currentTimeInfo = {
+                    created: now.format('MMM D, YYYY h:mm:ss A'),
+                    iso: now.toISOString(),
+                    relative: now.fromNow()
+                };
+            }
+            
+            // Add content to card
+            card.innerHTML = `
+                <button class="library-toggle" onclick="toggleLibrary(this)" data-person='${JSON.stringify(person)}'>${library.toUpperCase()}</button>
+                <h3>${title}</h3>
+                <p>${content}</p>
+                <div class="timestamp-section">
+                    <h4>🎂 Birthday Information (${library.toUpperCase()})</h4>
+                    <div class="timestamp-item"><strong>Born:</strong> ${birthdayInfo.formatted}</div>
+                    <div class="timestamp-item"><strong>That was:</strong> ${birthdayInfo.relative}</div>
+                    <div class="timestamp-item"><strong>Day of week:</strong> ${birthdayInfo.dayOfWeek}</div>
+                    <div class="timestamp-item"><strong>Next birthday:</strong> ${birthdayInfo.nextBirthdayDate} (${birthdayInfo.daysUntilNext} days)</div>
+                </div>
+                <div class="timestamp-section">
+                    <h4>⏰ Card Created (${library.toUpperCase()})</h4>
+                    <div class="timestamp-item"><strong>Created:</strong> ${currentTimeInfo.created}</div>
+                    <div class="timestamp-item"><strong>ISO format:</strong> ${currentTimeInfo.iso}</div>
+                </div>
+            `;
+            
+            // Add card to container
+            cardContainer.appendChild(card);
+        }
+        
+        // Function to toggle between libraries for a specific card
+        function toggleLibrary(button) {
+            const person = JSON.parse(button.getAttribute('data-person'));
+            const card = button.closest('.card');
+            const currentLib = button.textContent.toLowerCase();
+            const newLib = currentLib === 'luxon' ? 'moment' : 'luxon';
+            
+            // Remove the card
+            card.remove();
+            
+            // Re-add with different library
+            const title = person.name.charAt(0).toUpperCase() + person.name.slice(1);
+            const content = `
+                <strong>Name:</strong> ${person.name}<br>
+                <strong>Age:</strong> ${person.age} years old
+                <span class="age-badge">Age: ${person.age}</span>
+            `;
+            
+            addCard(title, content, person, newLib);
+        }
+        
+        // Generate cards using Luxon
+        function generateCards() {
+            clearCards();
+            currentLibrary = 'luxon';
+            
+            allPeople.forEach(person => {
+                const title = person.name.charAt(0).toUpperCase() + person.name.slice(1);
+                const content = `
+                    <strong>Name:</strong> ${person.name}<br>
+                    <strong>Age:</strong> ${person.age} years old
+                    <span class="age-badge">Age: ${person.age}</span>
+                `;
+                
+                addCard(title, content, person, 'luxon');
+            });
+            
+            updateStats();
+        }
+        
+        // Generate cards using Moment.js
+        function generateCardsMoment() {
+            clearCards();
+            currentLibrary = 'moment';
+            
+            allPeople.forEach(person => {
+                const title = person.name.charAt(0).toUpperCase() + person.name.slice(1);
+                const content = `
+                    <strong>Name:</strong> ${person.name}<br>
+                    <strong>Age:</strong> ${person.age} years old
+                    <span class="age-badge">Age: ${person.age}</span>
+                `;
+                
+                addCard(title, content, person, 'moment');
+            });
+            
+            updateStats();
+        }
+        
+        // Add custom person with birthday
+        function addCustomPerson() {
+            const nameInput = document.getElementById('personName');
+            const birthdayInput = document.getElementById('personBirthday');
+            
+            if (!nameInput.value || !birthdayInput.value) {
+                alert('Please enter both name and birthday');
+                return;
+            }
+            
+            // Calculate age from birthday
+            const { DateTime } = luxon;
+            const birthday = DateTime.fromISO(birthdayInput.value);
+            const age = Math.floor(DateTime.now().diff(birthday, 'years').years);
+            
+            const newPerson = {
+                name: nameInput.value.toLowerCase(),
+                age: age,
+                birthday: birthdayInput.value
+            };
+            
+            allPeople.push(newPerson);
+            
+            const title = newPerson.name.charAt(0).toUpperCase() + newPerson.name.slice(1);
+            const content = `
+                <strong>Name:</strong> ${newPerson.name}<br>
+                <strong>Age:</strong> ${newPerson.age} years old
+                <span class="age-badge">Age: ${newPerson.age}</span>
+            `;
+            
+            addCard(title, content, newPerson, currentLibrary);
+            
+            // Clear inputs
+            nameInput.value = '';
+            birthdayInput.value = '';
+            
+            updateStats();
+        }
+        
+        // Update statistics
+        function updateStats() {
+            const { DateTime } = luxon;
+            const statsContainer = document.getElementById('statsContainer');
+            const statsGrid = document.getElementById('statsGrid');
+            
+            if (allPeople.length === 0) {
+                statsContainer.style.display = 'none';
+                return;
+            }
+            
+            statsContainer.style.display = 'block';
+            
+            // Calculate statistics
+            const ages = allPeople.map(p => p.age);
+            const avgAge = Math.round(ages.reduce((a, b) => a + b, 0) / ages.length);
+            const oldestAge = Math.max(...ages);
+            const youngestAge = Math.min(...ages);
+            
+            // Birthday statistics
+            const birthdaysThisMonth = allPeople.filter(person => {
+                const birthday = DateTime.fromISO(person.birthday);
+                return birthday.month === DateTime.now().month;
+            }).length;
+            
+            const upcomingBirthdays = allPeople.filter(person => {
+                const birthday = DateTime.fromISO(person.birthday);
+                const nextBirthday = birthday.set({ year: DateTime.now().year });
+                const daysUntil = nextBirthday.diff(DateTime.now(), 'days').days;
+                return daysUntil >= 0 && daysUntil <= 30;
+            }).length;
+            
+            statsGrid.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-number">${allPeople.length}</div>
+                    <div class="stat-label">Total People</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${avgAge}</div>
+                    <div class="stat-label">Average Age</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${oldestAge}</div>
+                    <div class="stat-label">Oldest Person</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${youngestAge}</div>
+                    <div class="stat-label">Youngest Person</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${birthdaysThisMonth}</div>
+                    <div class="stat-label">Birthdays This Month</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${upcomingBirthdays}</div>
+                    <div class="stat-label">Birthdays Next 30 Days</div>
+                </div>
+            `;
+        }
+        
+        // Function to clear all cards
+        function clearCards() {
+            const cardContainer = document.getElementById('cardContainer');
+            cardContainer.innerHTML = '';
+            document.getElementById('statsContainer').style.display = 'none';
+        }
+        
+        // Add some people with birthdays for demo
+        function addPersonWithBirthday() {
+            const samplePeople = [
+                {name: 'emma', age: 26, birthday: '1998-11-18'},
+                {name: 'james', age: 34, birthday: '1990-07-09'},
+                {name: 'sophia', age: 29, birthday: '1995-02-14'}
+            ];
+            
+            const randomPerson = samplePeople[Math.floor(Math.random() * samplePeople.length)];
+            
+            if (!allPeople.some(p => p.name === randomPerson.name)) {
+                allPeople.push(randomPerson);
+                
+                const title = randomPerson.name.charAt(0).toUpperCase() + randomPerson.name.slice(1);
+                const content = `
+                    <strong>Name:</strong> ${randomPerson.name}<br>
+                    <strong>Age:</strong> ${randomPerson.age} years old
+                    <span class="age-badge">Age: ${randomPerson.age}</span>
+                `;
+                
+                addCard(title, content, randomPerson, currentLibrary);
+                updateStats();
+            } else {
+                alert('Person already exists! Try again for a different person.');
+            }
+        }
+        
+        // Automatically generate cards when page loads
+        window.onload = function() {
+            generateCards();
+        };
+    </script>
+</body>
+</html>

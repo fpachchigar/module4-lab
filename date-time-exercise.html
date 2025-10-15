@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Date/Time Exercise - Luxon vs Moment.js</title>
+    <!-- Luxon CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3.4.4/build/global/luxon.min.js"></script>
+    <!-- Moment.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .library-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .library-title {
+            color: #333;
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 15px;
+        }
+        
+        .controls {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        button {
+            background: #667eea;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 1em;
+        }
+        
+        button:hover {
+            background: #5a6fd8;
+        }
+        
+        .output-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .output-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 5px solid #667eea;
+        }
+        
+        .output-card h4 {
+            color: #333;
+            margin: 0 0 10px 0;
+        }
+        
+        .output-card .result {
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .comparison-table th,
+        .comparison-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .comparison-table th {
+            background: #667eea;
+            color: white;
+        }
+        
+        .comparison-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Date/Time Libraries: Luxon vs Moment.js</h1>
+        
+        <!-- Luxon Section -->
+        <div class="library-section">
+            <h2 class="library-title">📅 Luxon Examples</h2>
+            
+            <div class="controls">
+                <button onclick="runLuxonExamples()">Run Luxon Examples</button>
+                <button onclick="clearLuxonOutput()">Clear Output</button>
+            </div>
+            
+            <div id="luxonOutput" class="output-section">
+                <!-- Luxon results will appear here -->
+            </div>
+        </div>
+        
+        <!-- Moment.js Section -->
+        <div class="library-section">
+            <h2 class="library-title">⏰ Moment.js Examples</h2>
+            
+            <div class="controls">
+                <button onclick="runMomentExamples()">Run Moment.js Examples</button>
+                <button onclick="clearMomentOutput()">Clear Output</button>
+            </div>
+            
+            <div id="momentOutput" class="output-section">
+                <!-- Moment.js results will appear here -->
+            </div>
+        </div>
+        
+        <!-- Comparison Section -->
+        <div class="library-section">
+            <h2 class="library-title">🔄 Side-by-Side Comparison</h2>
+            
+            <div class="controls">
+                <button onclick="runComparison()">Compare Both Libraries</button>
+                <button onclick="clearComparison()">Clear Comparison</button>
+            </div>
+            
+            <div id="comparisonOutput">
+                <!-- Comparison results will appear here -->
+            </div>
+        </div>
+        
+        <!-- Luxon Problem Solving Section -->
+        <div class="library-section">
+            <h2 class="library-title">🧮 Luxon Problem Solving Exercises</h2>
+            
+            <div class="controls">
+                <div style="margin-bottom: 15px;">
+                    <label for="birthdateInput" style="display: block; margin-bottom: 5px; font-weight: bold; color: #333;">Your Birthdate:</label>
+                    <input type="date" id="birthdateInput" value="1990-05-15" style="padding: 12px; margin: 5px; border-radius: 5px; border: 2px solid #667eea; width: 200px; font-size: 14px;">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label for="date1Input" style="display: block; margin-bottom: 5px; font-weight: bold; color: #333;">First Date:</label>
+                    <input type="date" id="date1Input" value="2024-01-15" style="padding: 12px; margin: 5px; border-radius: 5px; border: 2px solid #667eea; width: 200px; font-size: 14px;">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label for="date2Input" style="display: block; margin-bottom: 5px; font-weight: bold; color: #333;">Second Date:</label>
+                    <input type="date" id="date2Input" value="2025-12-25" style="padding: 12px; margin: 5px; border-radius: 5px; border: 2px solid #667eea; width: 200px; font-size: 14px;">
+                </div>
+                <br>
+                <button onclick="solveLuxonProblems()">Solve All Problems</button>
+                <button onclick="clearProblemsOutput()">Clear Output</button>
+            </div>
+            
+            <div id="problemsOutput" class="output-section">
+                <!-- Problem solutions will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Luxon examples using the DateTime class
+        function runLuxonExamples() {
+            const { DateTime } = luxon;
+            const output = document.getElementById('luxonOutput');
+            
+            const examples = [
+                {
+                    title: 'Current Date/Time',
+                    code: 'DateTime.now()',
+                    result: DateTime.now().toString()
+                },
+                {
+                    title: 'Formatted Current Date',
+                    code: 'DateTime.now().toLocaleString(DateTime.DATETIME_MED)',
+                    result: DateTime.now().toLocaleString(DateTime.DATETIME_MED)
+                },
+                {
+                    title: 'Create Specific Date',
+                    code: 'DateTime.fromObject({ year: 2025, month: 10, day: 15 })',
+                    result: DateTime.fromObject({ year: 2025, month: 10, day: 15 }).toLocaleString()
+                },
+                {
+                    title: 'Parse ISO String',
+                    code: 'DateTime.fromISO("2025-10-15T14:30:00")',
+                    result: DateTime.fromISO("2025-10-15T14:30:00").toLocaleString(DateTime.DATETIME_MED)
+                },
+                {
+                    title: 'Add Days',
+                    code: 'DateTime.now().plus({ days: 7 })',
+                    result: DateTime.now().plus({ days: 7 }).toLocaleString(DateTime.DATE_MED)
+                },
+                {
+                    title: 'Subtract Hours',
+                    code: 'DateTime.now().minus({ hours: 3 })',
+                    result: DateTime.now().minus({ hours: 3 }).toLocaleString(DateTime.DATETIME_SHORT)
+                },
+                {
+                    title: 'Format Custom',
+                    code: 'DateTime.now().toFormat("yyyy-MM-dd HH:mm:ss")',
+                    result: DateTime.now().toFormat("yyyy-MM-dd HH:mm:ss")
+                },
+                {
+                    title: 'Relative Time',
+                    code: 'DateTime.now().minus({ days: 2 }).toRelative()',
+                    result: DateTime.now().minus({ days: 2 }).toRelative()
+                },
+                {
+                    title: 'Start of Month',
+                    code: 'DateTime.now().startOf("month")',
+                    result: DateTime.now().startOf("month").toLocaleString(DateTime.DATE_MED)
+                },
+                {
+                    title: 'End of Week',
+                    code: 'DateTime.now().endOf("week")',
+                    result: DateTime.now().endOf("week").toLocaleString(DateTime.DATE_MED)
+                },
+                {
+                    title: 'Different Timezone',
+                    code: 'DateTime.now().setZone("America/New_York")',
+                    result: DateTime.now().setZone("America/New_York").toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY)
+                },
+                {
+                    title: 'Days Until Christmas',
+                    code: 'DateTime.fromObject({ month: 12, day: 25 }).diff(DateTime.now(), "days")',
+                    result: `${Math.ceil(DateTime.fromObject({ year: 2025, month: 12, day: 25 }).diff(DateTime.now(), "days").days)} days`
+                }
+            ];
+            
+            output.innerHTML = '';
+            examples.forEach(example => {
+                const card = document.createElement('div');
+                card.className = 'output-card';
+                card.innerHTML = `
+                    <h4>${example.title}</h4>
+                    <div class="result"><strong>Code:</strong> ${example.code}</div>
+                    <div class="result"><strong>Result:</strong> ${example.result}</div>
+                `;
+                output.appendChild(card);
+            });
+        }
+        
+        // Moment.js examples
+        function runMomentExamples() {
+            const output = document.getElementById('momentOutput');
+            
+            const examples = [
+                {
+                    title: 'Current Date/Time',
+                    code: 'moment()',
+                    result: moment().toString()
+                },
+                {
+                    title: 'Formatted Current Date',
+                    code: 'moment().format("MMMM Do YYYY, h:mm:ss a")',
+                    result: moment().format("MMMM Do YYYY, h:mm:ss a")
+                },
+                {
+                    title: 'Create Specific Date',
+                    code: 'moment([2025, 9, 15])', // Month is 0-indexed in Moment
+                    result: moment([2025, 9, 15]).format("MMMM Do YYYY")
+                },
+                {
+                    title: 'Parse ISO String',
+                    code: 'moment("2025-10-15T14:30:00")',
+                    result: moment("2025-10-15T14:30:00").format("MMMM Do YYYY, h:mm A")
+                },
+                {
+                    title: 'Add Days',
+                    code: 'moment().add(7, "days")',
+                    result: moment().add(7, "days").format("MMMM Do YYYY")
+                },
+                {
+                    title: 'Subtract Hours',
+                    code: 'moment().subtract(3, "hours")',
+                    result: moment().subtract(3, "hours").format("h:mm A")
+                },
+                {
+                    title: 'Format Custom',
+                    code: 'moment().format("YYYY-MM-DD HH:mm:ss")',
+                    result: moment().format("YYYY-MM-DD HH:mm:ss")
+                },
+                {
+                    title: 'Relative Time',
+                    code: 'moment().subtract(2, "days").fromNow()',
+                    result: moment().subtract(2, "days").fromNow()
+                },
+                {
+                    title: 'Start of Month',
+                    code: 'moment().startOf("month")',
+                    result: moment().startOf("month").format("MMMM Do YYYY")
+                },
+                {
+                    title: 'End of Week',
+                    code: 'moment().endOf("week")',
+                    result: moment().endOf("week").format("MMMM Do YYYY")
+                },
+                {
+                    title: 'Different Timezone',
+                    code: 'moment().utc().format() + " (UTC)"',
+                    result: moment().utc().format() + " (UTC)"
+                },
+                {
+                    title: 'Days Until Christmas',
+                    code: 'moment([2025, 11, 25]).diff(moment(), "days")',
+                    result: `${moment([2025, 11, 25]).diff(moment(), "days")} days`
+                }
+            ];
+            
+            output.innerHTML = '';
+            examples.forEach(example => {
+                const card = document.createElement('div');
+                card.className = 'output-card';
+                card.innerHTML = `
+                    <h4>${example.title}</h4>
+                    <div class="result"><strong>Code:</strong> ${example.code}</div>
+                    <div class="result"><strong>Result:</strong> ${example.result}</div>
+                `;
+                output.appendChild(card);
+            });
+        }
+        
+        // Side-by-side comparison
+        function runComparison() {
+            const { DateTime } = luxon;
+            const output = document.getElementById('comparisonOutput');
+            
+            const comparisons = [
+                {
+                    operation: 'Current Date/Time',
+                    luxon: DateTime.now().toLocaleString(DateTime.DATETIME_MED),
+                    moment: moment().format("MMM D, YYYY h:mm A"),
+                    luxonCode: 'DateTime.now().toLocaleString(DateTime.DATETIME_MED)',
+                    momentCode: 'moment().format("MMM D, YYYY h:mm A")'
+                },
+                {
+                    operation: 'Add 5 Days',
+                    luxon: DateTime.now().plus({ days: 5 }).toLocaleString(DateTime.DATE_MED),
+                    moment: moment().add(5, 'days').format("MMM D, YYYY"),
+                    luxonCode: 'DateTime.now().plus({ days: 5 })',
+                    momentCode: 'moment().add(5, "days")'
+                },
+                {
+                    operation: 'Start of Month',
+                    luxon: DateTime.now().startOf('month').toLocaleString(DateTime.DATE_MED),
+                    moment: moment().startOf('month').format("MMM D, YYYY"),
+                    luxonCode: 'DateTime.now().startOf("month")',
+                    momentCode: 'moment().startOf("month")'
+                },
+                {
+                    operation: 'Relative Time (2 days ago)',
+                    luxon: DateTime.now().minus({ days: 2 }).toRelative(),
+                    moment: moment().subtract(2, 'days').fromNow(),
+                    luxonCode: 'DateTime.now().minus({ days: 2 }).toRelative()',
+                    momentCode: 'moment().subtract(2, "days").fromNow()'
+                },
+                {
+                    operation: 'Custom Format',
+                    luxon: DateTime.now().toFormat('yyyy-MM-dd'),
+                    moment: moment().format('YYYY-MM-DD'),
+                    luxonCode: 'DateTime.now().toFormat("yyyy-MM-dd")',
+                    momentCode: 'moment().format("YYYY-MM-DD")'
+                }
+            ];
+            
+            let tableHTML = `
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Operation</th>
+                            <th>Luxon Result</th>
+                            <th>Moment.js Result</th>
+                            <th>Luxon Code</th>
+                            <th>Moment.js Code</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            comparisons.forEach(comp => {
+                tableHTML += `
+                    <tr>
+                        <td><strong>${comp.operation}</strong></td>
+                        <td>${comp.luxon}</td>
+                        <td>${comp.moment}</td>
+                        <td><code>${comp.luxonCode}</code></td>
+                        <td><code>${comp.momentCode}</code></td>
+                    </tr>
+                `;
+            });
+            
+            tableHTML += `
+                    </tbody>
+                </table>
+                <div style="margin-top: 20px; padding: 15px; background: #e3f2fd; border-radius: 5px;">
+                    <h4>Key Differences:</h4>
+                    <ul>
+                        <li><strong>Luxon:</strong> Modern, immutable, better timezone support, smaller bundle size</li>
+                        <li><strong>Moment.js:</strong> More established, wider adoption, but larger and mutable</li>
+                        <li><strong>Performance:</strong> Luxon is generally faster and more memory efficient</li>
+                        <li><strong>API Design:</strong> Luxon uses modern JavaScript features and immutable operations</li>
+                    </ul>
+                </div>
+            `;
+            
+            output.innerHTML = tableHTML;
+        }
+        
+        // Clear functions
+        function clearLuxonOutput() {
+            document.getElementById('luxonOutput').innerHTML = '';
+        }
+        
+        function clearMomentOutput() {
+            document.getElementById('momentOutput').innerHTML = '';
+        }
+        
+        function clearComparison() {
+            document.getElementById('comparisonOutput').innerHTML = '';
+        }
+        
+        function clearProblemsOutput() {
+            document.getElementById('problemsOutput').innerHTML = '';
+        }
+
+        // Luxon Problem Solving Functions
+        function solveLuxonProblems() {
+            const { DateTime } = luxon;
+            const output = document.getElementById('problemsOutput');
+            
+            // Get input values
+            const birthdateInput = document.getElementById('birthdateInput').value;
+            const date1Input = document.getElementById('date1Input').value;
+            const date2Input = document.getElementById('date2Input').value;
+            
+            // Use default birthdate if not provided
+            const birthdate = birthdateInput || '1990-05-15'; // Default birthdate
+            const date1 = date1Input || '2024-01-15'; // Default first date
+            const date2 = date2Input || '2025-12-25'; // Default second date
+            
+            const problems = [];
+            
+            // Problem 1: Calculate date between birthdate and current date
+            const birthdateObj = DateTime.fromISO(birthdate);
+            const now = DateTime.now();
+            const daysBetween = now.diff(birthdateObj, 'days').days;
+            
+            problems.push({
+                title: '1. Days Between Birthdate and Current Date',
+                code: `const birthdate = DateTime.fromISO('${birthdate}');
+const now = DateTime.now();
+const daysBetween = now.diff(birthdate, 'days').days;`,
+                result: `${Math.floor(daysBetween)} days between ${birthdateObj.toFormat('MMM dd, yyyy')} and today`
+            });
+            
+            // Problem 2: Display years, months, and days between birthdate and current date
+            const ageDiff = now.diff(birthdateObj, ['years', 'months', 'days']);
+            const years = Math.floor(ageDiff.years);
+            const months = Math.floor(ageDiff.months % 12);
+            const days = Math.floor(ageDiff.days % 30.44); // Average days per month
+            
+            problems.push({
+                title: '2. Age in Years, Months, and Days',
+                code: `const ageDiff = now.diff(birthdate, ['years', 'months', 'days']);
+const years = Math.floor(ageDiff.years);
+const months = Math.floor(ageDiff.months % 12);
+const days = Math.floor(ageDiff.days % 30.44);`,
+                result: `${years} years, ${months} months, ${days} days`
+            });
+            
+            // Problem 3: Given two dates, display the date closest to current date
+            const date1Obj = DateTime.fromISO(date1);
+            const date2Obj = DateTime.fromISO(date2);
+            const diff1 = Math.abs(now.diff(date1Obj, 'days').days);
+            const diff2 = Math.abs(now.diff(date2Obj, 'days').days);
+            const closestDate = diff1 < diff2 ? date1Obj : date2Obj;
+            const closestDiff = Math.min(diff1, diff2);
+            
+            problems.push({
+                title: '3. Date Closest to Current Date',
+                code: `const date1 = DateTime.fromISO('${date1}');
+const date2 = DateTime.fromISO('${date2}');
+const diff1 = Math.abs(now.diff(date1, 'days').days);
+const diff2 = Math.abs(now.diff(date2, 'days').days);
+const closestDate = diff1 < diff2 ? date1 : date2;`,
+                result: `Comparing ${date1Obj.toFormat('MMM dd, yyyy')} and ${date2Obj.toFormat('MMM dd, yyyy')}<br>
+                        Closest date: ${closestDate.toFormat('MMM dd, yyyy')} (${Math.floor(closestDiff)} days from today)`
+            });
+            
+            // Problem 4: Display whether first date is before or after second date
+            const comparison = date1Obj < date2Obj ? 'before' : date1Obj > date2Obj ? 'after' : 'same as';
+            const daysDifference = Math.abs(date2Obj.diff(date1Obj, 'days').days);
+            
+            problems.push({
+                title: '4. Date Comparison (Before/After)',
+                code: `const comparison = date1 < date2 ? 'before' : date1 > date2 ? 'after' : 'same as';
+const daysDifference = Math.abs(date2.diff(date1, 'days').days);`,
+                result: `${date1Obj.toFormat('MMM dd, yyyy')} is ${comparison} ${date2Obj.toFormat('MMM dd, yyyy')}<br>
+                        Difference: ${Math.floor(daysDifference)} days`
+            });
+            
+            // Problem 5: Display current time in London
+            const londonTime = now.setZone('Europe/London');
+            
+            problems.push({
+                title: '5. Current Time in London',
+                code: `const londonTime = DateTime.now().setZone('Europe/London');`,
+                result: `London time: ${londonTime.toFormat('MMM dd, yyyy HH:mm:ss')} (${londonTime.offsetNameShort})<br>
+                        Local time: ${now.toFormat('MMM dd, yyyy HH:mm:ss')} (${now.offsetNameShort})`
+            });
+            
+            // Bonus: Summary of all results
+            problems.push({
+                title: '📋 Summary of All Results',
+                code: 'Complete analysis using Luxon library',
+                result: `
+                    <strong>Birthdate Analysis:</strong><br>
+                    • Born: ${birthdateObj.toFormat('EEEE, MMMM dd, yyyy')}<br>
+                    • Age: ${years} years, ${months} months, ${days} days<br>
+                    • Total days lived: ${Math.floor(daysBetween)} days<br><br>
+                    
+                    <strong>Date Comparison:</strong><br>
+                    • Date 1: ${date1Obj.toFormat('MMM dd, yyyy')}<br>
+                    • Date 2: ${date2Obj.toFormat('MMM dd, yyyy')}<br>
+                    • ${date1Obj.toFormat('MMM dd, yyyy')} is ${comparison} ${date2Obj.toFormat('MMM dd, yyyy')}<br>
+                    • Closest to today: ${closestDate.toFormat('MMM dd, yyyy')}<br><br>
+                    
+                    <strong>Time Zones:</strong><br>
+                    • Your local time: ${now.toFormat('HH:mm:ss')} (${now.offsetNameShort})<br>
+                    • London time: ${londonTime.toFormat('HH:mm:ss')} (${londonTime.offsetNameShort})
+                `
+            });
+            
+            // Display results
+            output.innerHTML = '';
+            problems.forEach(problem => {
+                const card = document.createElement('div');
+                card.className = 'output-card';
+                card.innerHTML = `
+                    <h4>${problem.title}</h4>
+                    <div class="result"><strong>Code:</strong><br><pre style="background: #f5f5f5; padding: 10px; border-radius: 5px; overflow-x: auto;">${problem.code}</pre></div>
+                    <div class="result"><strong>Result:</strong><br>${problem.result}</div>
+                `;
+                output.appendChild(card);
+            });
+        }
+
+        // Auto-run examples when page loads
+        window.onload = function() {
+            runLuxonExamples();
+            runMomentExamples();
+            runComparison();
+            // Auto-solve problems with default values
+            solveLuxonProblems();
+        };
+    </script>
+</body>
+</html>
